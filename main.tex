@@ -22,12 +22,36 @@
     \begin{abstract}
         A preencher
     \end{abstract}
+    
+    \newpage
 
     \tableofcontents
 
+    \newpage
+
     \section{Introdução}
 
+        Redes neurais são uma subárea da inteligência artificial que busca aprender relações e padrões de forma semelhante a um cérebro biológico.
+        Atualmente, a utilização de redes neurais já está estabelecida, e toda grande empresa ou instituição que lida com tecnologia já faz seu uso.
+        Porém, assim como nosso cérebro, ainda não temos um grau de entendimento suficiente do seu funcionamento.
+
+        Uma rede complexa é um grafo.
+        Geralmente ela é caracterizada pelo fato de não ser possível explicar \textit{features} emergentes apenas pela soma de suas partes.
+        Por exemplo, é muito difícil entender como uma doença se propaga olhando apenas para como um indivíduo pega e transmite uma doença.
+        
+        Dessa maneira, redes neurais podem ser interpretadas como redes complexas.
+        Na verdade, a teoria de redes complexas tem se mostrado útil para seu entendimento \cite{galhardo2006redes}.
+        Poucos trabalhos, porém, têm sido realizados nesse sentido.
+
+        O objetivo deste trabalho é introduzir algumas arquiteturas de redes neurais (rede neural tradicional \textit{feedfoward} e rede de crença profunda)
+        e apresentar e analisar alguns resultados do estudo de redes de crença profunda do ponto de vista de redes complexas, por \cite{testolin2018deep}.
+        Serão apresentadas medidas de topologia de grafos (como grau e "força" \ médios) em uma rede de crença profunda antes e depois do seu treinamento.
+        Além disso, serão exploradas relações entre funcionais dos neurônios e a estrutura da rede (será que a função que um neurônio desempenha afeta a relação entre o grau e a força médios, por exemplo?).
+
+        Este é um trabalho avaliado para a disciplina Tópicos de Matemática Aplicada, com relação à área de Redes Complexas, com aulas ministradas pelo professor Moacyr Alvim Horta.
+
     \section{Redes neurais \textit{feedforward}}
+        \label{feedforward}
 
         Esta seção introduz uma configuração de redes neurais chamada \textit{feedforward}, como exemplifica a Figura \ref{fig1}, apresentada em \cite{nielsen2015neural}.
 
@@ -150,6 +174,7 @@
             As derivadas, por sua vez, são calculadas utilizando \textit{backpropagation}.
 
     \section{Rede de crença profunda}
+        \label{belief}
 
         Em \cite{testolin2018deep}, foi utilizada outro tipo de arquitetura de redes neurais, a chamada rede de crença profunda (\textit{deep belief network}).
         A topologia é muito semelhante, mas ela é diferente no modo como ocorre o aprendizado.
@@ -215,7 +240,7 @@
             A ideia nesse tipo de rede é que, à medida que atividades escondidas vão sendo utilizadas como entrada, a rede vai construindo representações mais abstratas dos dados (\cite{testolin2018deep}), assim como em uma rede neural tradicional.
 
     \section{Análise de redes neurais a partir de ciência de redes}
-            \label{analysis}
+        \label{analysis}
 
         Em \cite{testolin2018deep}, é explorada uma rede de crença profunda utilizando ferramentas de ciência de redes e redes complexas.
         A ideia é que, quando se inicia uma rede de crença profunda com pesos aleatórios (neste trabalho, dados por uma distribução normal com média zero), padrões emergem.
