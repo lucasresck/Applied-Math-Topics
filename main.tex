@@ -20,12 +20,10 @@
     \maketitle
 
     \begin{abstract}
-        Este trabalho visa apresentar arquiteturas comuns de redes neurais, como a tradicional \textit{feedforward} e a rede de crença profunda, apresentando seus modelos, como aprendem e conceitos teóricos chave para seu entendimento.
-        Existem alguns exemplos e figuras.
-        Além disso, este trabalho tem como objetivo analisar uma rede de crença profunda utilizando ferramentas de ciência de redes e redes complexas.
-        Medidas topológicas dessas áreas são utilizadas antes e depois do treinamento da rede de crença, e resultados são interpretados e comparados.
-        É explorada a relação entre o funcional de um neurônio e correlações entre suas medidas topológicas.
-        Essa análise foi realizada por \cite{testolin2018deep}.
+        Este trabalho visa apresentar arquiteturas comuns de redes neurais, como a tradicional \textit{feedforward} e a rede de crença profunda, mostrando seus modelos, como eles aprendem e os conceitos teóricos chave para seu entendimento, acompanhados de alguns exemplos e figuras.
+        Além disso, este trabalho visa analisar um experimento (\cite{testolin2018deep}) em que foram utilizadas, em uma rede de crença profunda, ferramentas de ciência de redes e redes complexas.
+        Nele, medidas topológicas de redes são utilizadas antes e depois do treinamento de uma rede de crença, e os resultados são interpretados e comparados.
+        Além disso, é explorada a relação entre o funcional de um neurônio e correlações entre suas medidas topológicas.
     \end{abstract}
     
     \newpage
@@ -37,12 +35,12 @@
     \section{Introdução}
 
         Redes neurais são uma subárea da inteligência artificial que busca aprender relações e padrões de forma semelhante a um cérebro biológico.
-        Atualmente, a utilização de redes neurais já está estabelecida, e toda grande empresa ou instituição que lida com tecnologia já faz seu uso.
+        Atualmente, a utilização de redes neurais já está bem estabelecida, e toda grande empresa ou instituição que lida com tecnologia já faz seu uso.
         Porém, assim como nosso cérebro, ainda não temos um grau de entendimento suficiente do seu funcionamento.
 
         Uma rede complexa é um grafo.
         Geralmente ela é caracterizada pelo fato de não ser possível explicar \textit{features} emergentes apenas pela soma de suas partes.
-        Por exemplo, é muito difícil entender como uma doença se propaga olhando apenas para como um indivíduo pega e transmite uma doença.
+        Por exemplo, é muito difícil entender como uma doença se propaga observando apenas para como um indivíduo pega e transmite uma doença.
         
         Dessa maneira, redes neurais podem ser interpretadas como redes complexas.
         Na verdade, a teoria de redes complexas tem se mostrado útil para seu entendimento \cite{galhardo2006redes}.
@@ -53,7 +51,7 @@
         Serão apresentadas medidas de topologia de grafos (como grau e "força" \ médios) em uma rede de crença profunda antes e depois do seu treinamento.
         Além disso, serão exploradas relações entre funcionais dos neurônios e a estrutura da rede (será que a função que um neurônio desempenha afeta a relação entre o grau e a força médios, por exemplo?).
 
-        Este é um trabalho avaliado para a disciplina Tópicos de Matemática Aplicada, com relação à área de Redes Complexas, com aulas ministradas pelo professor Moacyr Alvim Horta.
+        Este é um trabalho avaliado para a disciplina Tópicos de Matemática Aplicada, na área de Redes Complexas, com aulas ministradas pelo professor Moacyr Alvim Horta.
 
     \section{Redes neurais \textit{feedforward}}
         \label{feedforward}
@@ -69,8 +67,8 @@
 
         \subsection{Neurônios sigmóide}
 
-            A unidade fundamental de uma rede neural é o neurônio, em analogia ao cérebro presente nos animais.
-            Sejam $x_1, \cdots, x_n$ valores numéricos de entrada pertencentes a $[0, 1]$.
+            A unidade fundamental de uma rede neural é o neurônio, em analogia ao sistema nervoso dos animais.
+            Sejam $x_1, \cdots, x_n$ valores numéricos de entrada pertencentes ao intervalo $[0, 1]$.
             Um neurônio é uma função que toma esses valores como entrada e produz uma saída, como exemplifica a Figura \ref{fig2}, também apresentada por \cite{nielsen2015neural}.
 
             \begin{figure}[h!]
@@ -93,7 +91,7 @@
 
             $\mathbf{w}$ é um vetor de pesos, podendo ser interpretados como os pesos das arestas que ligam $x_i$ e o neurônio.
             Seu objetivo é "levar em consideração" \ todas as entradas, porém ponderando essas configurações.
-            Veremos mais tarde, neste trabalho, que o objetivo da rede neural é "aprender" \ (também) quais os valores de $\mathbf{w}$.
+            Veremos mais tarde, neste trabalho, que o objetivo da rede neural é "aprender" \ quais os valores de $\mathbf{w}$ (também).
 
             $\mathbf{x}$ é o vetor da entrada.
             
@@ -103,7 +101,7 @@
 
             Observe que a saída do neurônio é uma função não linear de uma combinação linear das entradas.
             A combinação linear permite que ajustemos os pesos para a saída que quisermos, ou seja, "pequenas alterações na entrada produzem pequenas alterações na saída".
-            A ideia é que não geramos saltos ou grandes variações quando alteramos apenas um pouco o parâmetro de entrada.
+            A ideia é que não geramos saltos ou grandes variações quando alteramos apenas um pouco os parâmetros de peso e/ou viés.
             
             O fato da função ser não linear é o que dá a complexidade da função quando muitos neurônios são reunidos.
             Veremos que, ao reunirmos vários neurônios para formar uma rede neural, teremos uma função não linear muito complexa.
@@ -115,18 +113,18 @@
             A cada partição do grafo, chamaremos camada (\textit{layer}).
             Duas camadas "adjacentes" \ são totalmente conectadas, com todas as arestas orientadas no mesmo sentido (que, por convenção, será da esquerda para a direita).
 
-            A primeira camada é chamada camada de entrada (\textit{input layer}).
+            A primeira camada é a de entrada (\textit{input layer}).
             Tecnicamente, esta não é uma camada de verdade, mas apenas uma representação da entrada de valores, tal que os neurônios para os quais as arestas dessa camada apontam apenas recebem esses valores.
             
             A última camada é a de saída (\textit{output}).
-            As camadas restantes são chamadas escondidas (\textit{hidden layers}), apenas por analogia.
+            As camadas restantes são chamadas de escondidas (\textit{hidden layers}), apenas por analogia.
 
             Vamos considerar a matriz $W_k$ sendo aquela com os pesos da camada $k$.
             Então o elemento $w_{ji}$ (linha $j$, coluna $i$) representa o peso da aresta que liga o nó $j$ da camada $k$ ao nó $i$ da camada $k + 1$.
-            Além disso, $b_k$ representa os viéses de cada neurônio da camada $k$.
+            Além disso, $\mathbf{b_k}$ representa os viéses de cada neurônio da camada $k$.
             
             Dessa forma, um vetor $\mathbf{x}$ na camada $k$ tem como resultado na camada $k + 1$ o vetor $\sigma (W_{ji} \mathbf{x} + \mathbf{b_k})$.
-            Observe que a função $\sigma(\mathbf{x})$ aplicada ao vetor $\mathbf{x}$ representa a aplicação da função $\sigma$ a todos os elementos de $\mathbf{x}$.
+            Observe que a função $\sigma(\mathbf{x})$ aplicada ao vetor $\mathbf{x}$ representa a aplicação da função $\sigma$ a todos as coordenadas de $\mathbf{x}$.
 
             Sejam $W$ a matriz tridimensional de $W_k$ e $b$ a matriz de vetores $\mathbf{b_k}$.
 
@@ -134,7 +132,7 @@
         
             Suponha que queiramos uma rede neural para diferenciar gatos e cachorros.
             Então construímos de forma que tenha dois neurônios na camada de saída.
-            Queremos que, ao alimentarmos a rede com a imagem (vetorizada) e um cachorro, ela resulte em um vetor $(1, 0)$.
+            Queremos que, ao alimentarmos a rede com a imagem (vetorizada) de um cachorro, ela resulte em um vetor $(1, 0)$.
             Quando alimentada por uma imagem de um gato, $(0, 1)$.
             Buscamos um banco de dados de cachorros e gatos. Seja $\mathbf{y}$ a função que identifica cachorros e gatos:
 
@@ -152,7 +150,8 @@
             \end{equation}
 
             Nosso objetivo, nesse sentido, é calcular $W$ e $b$ tal que a função custo seja mínima.
-            O método utilizado para isso é o do gradiente (\textit{gradient descent}), que atualiza os vetores $\mathbf{w_k}$ e $\mathbf{b_l}$ da seguinte forma:
+            Observe que a função custo calcula a diferença entre a saída da nossa rede neural e a saída que realmente queremos.
+            O método utilizado para minimizar a função custo é o do gradiente (\textit{gradient descent}), que atualiza os vetores $\mathbf{w_k}$ e $\mathbf{b_l}$ da seguinte forma:
 
             \begin{equation}
                 \begin{split}
@@ -198,7 +197,7 @@
             A camada $v$ é chamada camada visível, pois é aquela que recebe o vetor de entrada.
             A camada $h$ é a camada escondida. Como na rede \textit{feedforward}, as arestas têm pesos, porém não há viéses.
 
-            Nesta configuração de redes, os neurônios são ativados ($1$) ou não ($0$), diferentemente da configuração anterior, em que os neurônios pudiam assumir valores entre $[0, 1]$.
+            Nesta configuração de redes, os neurônios são ativados ($1$) ou não ($0$), diferentemente da configuração anterior, em que os neurônios pudiam assumir valores em $[0, 1]$.
             Seja $W$ a matriz de pesos dessa rede, e $w_{ji}$ um elemento.
             Dado um vetor $\mathbf{v}$ na camada visível, a ativação $\mathbf{h}$ dos neurônios na camada é dada por:
 
@@ -211,9 +210,9 @@
             \end{equation}
 
             O aprendizado dessa rede acontece em duas fases, que, em \cite{testolin2018deep}, são chamadas de fases \textbf{positiva} e \textbf{negativa}.
-            Na fase positiva, fornecemos um vetor $\mathbf{v}$ à camada visível, e o vetor $\mathbf{h}$ é calculado de acordo com a equação \ref{hi}.
+            Na fase positiva, fornecemos um vetor $\mathbf{v}$ à camada visível, e o vetor $\mathbf{h}$ é calculado de acordo com a Equação \ref{hi}.
 
-            Na fase negativa, ao invés de colocarmos um vetor na camada de entrada, a rede automaticamente gera um vetor nessa camada, iniciando aleatoriamente um vetor na camada escondida.
+            Na fase negativa, a rede inicia aleatoriamente um vetor na camada escondida e automaticamente gera um vetor na camada visível.
 
             Dessa forma, são atualizados os pesos da rede de acordo com
 
@@ -250,6 +249,7 @@
         Em \cite{testolin2018deep}, é explorada uma rede de crença profunda utilizando ferramentas de ciência de redes e redes complexas.
         A ideia é que, quando se inicia uma rede de crença profunda com pesos aleatórios (neste trabalho, dados por uma distribução normal com média zero), padrões emergem.
         O foco, portanto, será apontar alguns avanços obtidos por \cite{testolin2018deep} a partir de uma rede treinada com imagens de dígitos manuscritos (base de dados MNIST), utilizando três máquinas de Boltzmann restritas (MBR).
+        
         Se $W_i$ é a matriz de adjacência de cada MBR, então esta é a matriz de toda a rede de crença:
 
         \begin{equation}
@@ -261,7 +261,7 @@
                 \end{bmatrix}
         \end{equation}
 
-        Pontos que são abordados:
+        Pontos que serão abordados:
         
         \begin{itemize}
             \item Distribuição dos graus, "forças" \ (a ser definido) e pesos em cada camada;
@@ -288,7 +288,7 @@
                 \label{fig5}
             \end{figure}
 
-            Os autores decidiram dividir os nós do grafo em grupos para algumas das análises, e realizam o agrupamento baseado nos campos receptivos, utilizando algumas técnicas pertinentes.
+            Os autores decidiram dividir os nós do grafo em grupos para algumas das análises, e realizam um agrupamento (\textit{clustering}) baseado nos campos receptivos, utilizando algumas técnicas pertinentes.
 
         \subsection{Resultados}
 
@@ -328,7 +328,7 @@
 
             \begin{itemize}
                 \item Houve um deslocamento para a esquerda da distribuição dos pesos da rede como um todo;
-                \item A distribuição não é mais gaussiana (principalmente por $v - h1$ e $h2 - h3$);
+                \item A distribuição não é mais gaussiana (principalmente por causa das camadas $v - h1$ e $h2 - h3$);
                 \item $h1 - h2$ ainda é quase normal, mas com maior variância e caudas mais longas.
             \end{itemize}
 
@@ -352,7 +352,7 @@
                 \item Grau médio de nós: $\overline{k_i} = \sum_{j \in G_i} k_j / |G_i|$, em que $k_j$ é o grau do nó $j$ e $|G_i|$ é o número de nós na subrede $G_i$;
                 \item Grau positivo médio de nós: $\overline{k_i^+} = \sum_{j \in G_i, k_j \ge 0} k_j / |G_i|$;
                 \item Grau negativo médio de nós: $\overline{k_i^-} = \sum_{j \in G_i, k_j \le 0} k_j / |G_i|$;
-                \item Grau médio de vizinhos próximos: $\overline{k_{nn_i}} = \sum_{i \in G_i} \sum_{j \in nn(i)} k_j / G$, em que $nn(i)$ são os vizinhos próximos de $i$ e $G$ é o número de subgrafos (19, no nosso caso);
+                \item Grau médio de vizinhos próximos: $\overline{k_{nn_i}} = \sum_{l \in G_i} \sum_{j \in nn(l)} k_j / G$, em que $nn(l)$ são os vizinhos próximos de $l$ e $G$ é o número de subgrafos (19, no nosso caso);
                 \item Força média dos nós: $\overline{s}_i = \sum_{j \in G_i} s_j / G$, em que $s_j$ é a força do nó $j$.
             \end{itemize}
 
@@ -362,8 +362,8 @@
                 \centering
                 \includegraphics[scale=0.35]{Images/Structure vs function.png}
                 \caption{Resultados do estudo de características topológicas e funcionais.
-                Cada linha representa uma camada, cada coluna representa uma comparação.
-                Cada ponto é uma medida topológica de um subgrafo.}
+                Cada linha representa uma camada, cada coluna representa uma comparação de características topológicas.
+                Cada ponto representa um subgrafo.}
                 \label{fig6}
             \end{figure}
 
@@ -377,7 +377,19 @@
 
     \section{Considerações finais}
 
-        Os objetivos principais deste trabalho foram estudar algumas arquiteturas de redes neurais e investigar uma rede neural da perspectiva de ciência de redes e redes complexas.
+        Os resultados apresentados para grau médio dos nós levou em consideração um limiar $\theta$, como evidenciado na Seção \ref{analysis}.
+        Se não fosse o caso, teríamos que um grafo tetrapartite totalmente conectado, pela própria definição da arquitetura da rede.
+
+        A partir dos resultados, pudemos observar que houve uma tendência de deslocamento dos pesos em direção a valores negativos.
+        Em \cite{testolin2018deep}, os autores pontuam que o contraste entre o fundo preto e os dígitos brancos pode ter induzido fortes anti-correlações entre os neurônios.
+        De fato, vários neurônios obtiveram pesos negativos, inibindo, portanto, a atividade de vários neurônios conectados.
+        Seu campo receptivo, por sua vez, tende a se especializar em \textit{features} muito específicas das imagens, ativando sob estímulos muito particulares, estando anti-correlacionada com os pixels restantes da imagem.
+
+        Ou seja, podemos pensar que muitos neurônios se especializaram em \textit{features} específicas, descartando o restante da imagem (com pesos negativos), de modo que a distribuição dos pesos da rede se moveu na direção negativa.
+
+        Os autores comentam sobre a não trivialidade de se caracterizar módulos funcionais em redes neurais.
+        A solução encontrada foi aproximar o funcional de um neurônio pelo seu campo receptivo, ou seja, aquilo que o neurônio "vê" \ e o leva a tomar uma decisão de se ativar ou não.
+        Os campos receptivos foram utilizados para o agrupamento, de modo a termos subredes de nós com campos receptivos parecidos.
 
         As redes neurais \textit{feedforward} tradicionais são algumas das pioneiras, das mais simples e das mais compreensíveis.
         Bibliotecas, \textit{softwares} e métodos de utilizar esse tipo de rede não faltam, mostrando por que é pertinente estudar essa arquitetura.
@@ -386,20 +398,7 @@
         A necessidade do estudo de redes de crença profunda surgiu para que fosse possível compreender os resultados em \cite{testolin2018deep}.
         Realmente, pouco trabalho existe no que diz respeito à interseção entre redes neurais e redes complexas, e \cite{testolin2018deep} foi uma das exceções.
 
-        Os resultados apresentados para grau médio dos nós levou em consideração um limiar $\theta$, como evidenciado na Seção \ref{analysis}.
-        Se não fosse o caso, teríamos que um grafo tetapartite totalmente conectado, pela própria arquitetura da rede.
-
-        A partir dos resultados, pudemos observar que houve uma tendência de deslocamento dos pesos em direção a valores negativos.
-        Em \cite{testolin2018deep}, os autores pontuam que o contraste entre o fundo preto e os dígitos brancos pode ter induzido fortes anti-correlações entre os neurônios.
-        Vários neurônios obtiveram pesos negativos, inibindo, portanto, a atividade de vários neurônios conectados.
-        Seu campo receptivo, por sua vez, tende a se especializar em \textit{features} muito específicas das imagens, ativando sob estímulos muito particulares, estando anti-correlacionada com os pixels restantes da imagem.
-
-        Ou seja, podemos pensar que muitos neurônios se especializaram em \textit{features} específicas, descartando o restante da imagem (com pesos negativos), de modo que a distribuição dos pesos da rede se moveu na direção negativa.
-
-        Os autores comentam sobre a não trivialidade de se caracterizar módulos funcionais em redes neurais.
-        A solução encontrada foi aproximar o funcional de um neurônio pelo seu campo receptivo, ou seja, aquilo que o neurônio "vê" \ e o leva a tomar uma decisão de se ativar ou não.
-        Os campos receptivos foram agrupados, de modo a termos subredes de nós com campos receptivos parecidos.
-
+        Os objetivos principais deste trabalho foram estudar algumas arquiteturas de redes neurais e investigar uma rede neural da perspectiva de ciência de redes e redes complexas.
         Comenta-se atualmente sobre a dificuldade de interpretabilidade de como uma rede neural toma uma decisão, como se fosse uma "caixa preta".
         Dessa forma, trabalhos que tentam "desvendá-la" \ são muito bem-vindos. 
 
