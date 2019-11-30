@@ -23,6 +23,8 @@
         A preencher
     \end{abstract}
 
+    \tableofcontents
+
     \section{Introdução}
 
     \section{Redes neurais \textit{feedforward}}
@@ -213,10 +215,11 @@
             A ideia nesse tipo de rede é que, à medida que atividades escondidas vão sendo utilizadas como entrada, a rede vai construindo representações mais abstratas dos dados (\cite{testolin2018deep}), assim como em uma rede neural tradicional.
 
     \section{Análise de redes neurais a partir de ciência de redes}
+            \label{analysis}
 
         Em \cite{testolin2018deep}, é explorada uma rede de crença profunda utilizando ferramentas de ciência de redes e redes complexas.
         A ideia é que, quando se inicia uma rede de crença profunda com pesos aleatórios (neste trabalho, dados por uma distribução normal com média zero), padrões emergem.
-        O foco, portanto, será apontar alguns avanços obtidos por \cite{testolin2018deep} a partir de uma rede treinada com imagens de dígitos manuscritos, utilizando três máquinas de Boltzmann restritas (MBR).
+        O foco, portanto, será apontar alguns avanços obtidos por \cite{testolin2018deep} a partir de uma rede treinada com imagens de dígitos manuscritos (base de dados MNIST), utilizando três máquinas de Boltzmann restritas (MBR).
         Se $W_i$ é a matriz de adjacência de cada MBR, então esta é a matriz de toda a rede de crença:
 
         \begin{equation}
@@ -343,6 +346,32 @@
             \end{itemize}
 
     \section{Considerações finais}
+
+        Os objetivos principais deste trabalho foram estudar algumas arquiteturas de redes neurais e investigar uma rede neural da perspectiva de ciência de redes e redes complexas.
+
+        As redes neurais \textit{feedforward} tradicionais são algumas das pioneiras, das mais simples e das mais compreensíveis.
+        Bibliotecas, \textit{softwares} e métodos de utilizar esse tipo de rede não faltam, mostrando por que é pertinente estudar essa arquitetura.
+        \cite{nielsen2015neural} foi um ótimo guia introdutório para isso.
+        
+        A necessidade do estudo de redes de crença profunda surgiu para que fosse possível compreender os resultados em \cite{testolin2018deep}.
+        Realmente, pouco trabalho existe no que diz respeito à interseção entre redes neurais e redes complexas, e \cite{testolin2018deep} foi uma das exceções.
+
+        Os resultados apresentados para grau médio dos nós levou em consideração um limiar $\theta$, como evidenciado na Seção \ref{analysis}.
+        Se não fosse o caso, teríamos que um grafo tetapartite totalmente conectado, pela própria arquitetura da rede.
+
+        A partir dos resultados, pudemos observar que houve uma tendência de deslocamento dos pesos em direção a valores negativos.
+        Em \cite{testolin2018deep}, os autores pontuam que o contraste entre o fundo preto e os dígitos brancos pode ter induzido fortes anti-correlações entre os neurônios.
+        Vários neurônios obtiveram pesos negativos, inibindo, portanto, a atividade de vários neurônios conectados.
+        Seu campo receptivo, por sua vez, tende a se especializar em \textit{features} muito específicas das imagens, ativando sob estímulos muito particulares, estando anti-correlacionada com os pixels restantes da imagem.
+
+        Ou seja, podemos pensar que muitos neurônios se especializaram em \textit{features} específicas, descartando o restante da imagem (com pesos negativos), de modo que a distribuição dos pesos da rede se moveu na direção negativa.
+
+        Os autores comentam sobre a não trivialidade de se caracterizar módulos funcionais em redes neurais.
+        A solução encontrada foi aproximar o funcional de um neurônio pelo seu campo receptivo, ou seja, aquilo que o neurônio "vê" \ e o leva a tomar uma decisão de se ativar ou não.
+        Os campos receptivos foram agrupados, de modo a termos subredes de nós com campos receptivos parecidos.
+
+        Comenta-se atualmente sobre a dificuldade de interpretabilidade de como uma rede neural toma uma decisão, como se fosse uma "caixa preta".
+        Dessa forma, trabalhos que tentam "desvendá-la" \ são muito bem-vindos. 
 
     \bibliographystyle{plain}
     \bibliography{references}
