@@ -13,6 +13,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{subcaption}
 
 \begin{document}
 
@@ -212,6 +213,134 @@
             A ideia nesse tipo de rede é que, à medida que atividades escondidas vão sendo utilizadas como entrada, a rede vai construindo representações mais abstratas dos dados (\cite{testolin2018deep}), assim como em uma rede neural tradicional.
 
     \section{Análise de redes neurais a partir de ciência de redes}
+
+        Em \cite{testolin2018deep}, é explorada uma rede de crença profunda utilizando ferramentas de ciência de redes e redes complexas.
+        A ideia é que, quando se inicia uma rede de crença profunda com pesos aleatórios (neste trabalho, dados por uma distribução normal com média zero), padrões emergem.
+        O foco, portanto, será apontar alguns avanços obtidos por \cite{testolin2018deep} a partir de uma rede treinada com imagens de dígitos manuscritos, utilizando três máquinas de Boltzmann restritas (MBR).
+        Se $W_i$ é a matriz de adjacência de cada MBR, então esta é a matriz de toda a rede de crença:
+
+        \begin{equation}
+            W = \begin{bmatrix}
+                    0 & W_1 & 0 & 0 \\
+                    W_1^T & 0 & W_2 & 0 \\
+                    0 & W_2^T & 0 & W_3 \\
+                    0 & 0 & W_3^T & 0
+                \end{bmatrix}
+        \end{equation}
+
+        Pontos que são abordados:
+        
+        \begin{itemize}
+            \item Distribuição dos graus, "forças" \ (a ser definido) e pesos em cada camada;
+            \item Grau médio, "força", coeficiente de variação e vizinhos próximos médios das subredes formadas por nós com propriedades funcionais similares (veja Seção \ref{field}).
+        \end{itemize}
+
+        Para o cálculo da distribuição dos graus não ser trivial (rede totalmente conectada), foi estabelecido um limiar (\textit{threshold}) $\theta$, de modo a zerar arestas com peso menor do que $\theta$.
+
+        \subsection{Campos receptivo neuronais}
+            \label{field}
+
+            Um campo receptivo é basicamente como um neurônio "vê" \ o vetor de entrada.
+            Suponha um neurônio na primeira camada escondida.
+            O modo como ele "vê" \ a entrada depende basicamente dos pesos das arestas que ligam os nós da camada de entrada e ele próprio.
+            Se todos os pesos forem $0$, então o neurônio não vê nada.
+            Essa característica de cada nó é importante, pois a partir dela é possível perceber as \textit{features} que são importantes em cada nó e camada.
+
+            O campo receptivo dos nós de outras camadas é uma combinação linear dos campos dos nós das camadas anteriores.
+
+            \begin{figure}[h!]
+                \centering
+                \includegraphics[scale=0.2]{Images/Receptive fields.png}
+                \caption{Exemplo de campos receptivos (apresentado em \cite{testolin2018deep}).}
+                \label{fig5}
+            \end{figure}
+
+            Os autores decidiram dividir os nós do grafo em grupos para algumas das análises, e realizam o agrupamento baseado nos campos receptivos, utilizando algumas técnicas pertinentes.
+
+        \subsection{Resultados}
+
+            A Figura \ref{fig6} (de \cite{testolin2018deep}) mostra os resultados da distribuição dos pesos antes e depois do aprendizado.
+
+            \begin{figure}[h!]
+                \begin{subfigure}{0.5\textwidth}
+                    \centering
+                    \includegraphics[scale=.3]{Images/Weights distribution.png}
+                    \caption{Toda a rede antes do treinamento.}
+                \end{subfigure}
+                \begin{subfigure}{0.5\textwidth}
+                    \centering
+                    \includegraphics[scale=0.3]{Images/Weights distribution (2).png}
+                    \caption{Toda a rede depois do treinamento.}
+                \end{subfigure}
+                \begin{subfigure}{0.5\textwidth}
+                    \centering
+                    \includegraphics[scale=0.3]{Images/Weights distribution (3).png}
+                    \caption{$v - h1$ depois do treinamento.}
+                \end{subfigure}
+                \begin{subfigure}{0.5\textwidth}
+                    \centering
+                    \includegraphics[scale=0.3]{Images/Weights distribution (4).png}
+                    \caption{$h1 - h2$ depois do treinamento.}
+                \end{subfigure}
+                \begin{center}
+                    \begin{subfigure}{0.5\textwidth}
+                        \centering
+                        \includegraphics[scale=0.3]{Images/Weights distribution (5).png}
+                        \caption{$h2 - h3$ depois do treinamento.}
+                    \end{subfigure}
+                \end{center}
+                \caption{Distribuição dos pesos da rede.}
+                \label{fig6}
+            \end{figure}
+
+            \begin{itemize}
+                \item Houve um deslocamento para a esquerda da distribuição dos pesos da rede como um todo;
+                \item A distribuição não é mais gaussiana (principalmente por $v - h1$ e $h2 - h3$);
+                \item $h1 - h2$ ainda é quase normal, mas com maior variância e caudas mais longas.
+            \end{itemize}
+
+            A força de um nó $i$ pode ser definida como $s_i = \sum_j w_{ij}$. Alguns resultados:
+
+            \begin{itemize}
+                \item No início, a distribuição é gaussiana, por consequência da distribuição dos pesos ser gaussiana;
+                \item Em geral, após o treinamento, as forças foram negativas;
+                \item Existem longas caudas positivas;
+                \item As forças dos nós em $v - h1$ são todas negativas.
+            \end{itemize}
+
+            Em relação aos campos receptores, os nós do início da rede (primeira camada) possuem campos que representam estruturas localizadas simples, como pequenas manchas,
+            enquanto aqueles mais profundos representam \textit{features} mais complexas, como detecção de arestas.
+
+            Agora vamos analisar alguns resultados que relacionam características topológicas (estrutura da rede) e características funcionais (campos receptores).
+            Consideramos subredes $G_i$ formadas por nós que pertencem ao mesmo grupo de campos receptores.
+            Foram estudadas as seguintes características topológicas:
+
+            \begin{itemize}
+                \item Grau médio de nós: $\overline{k_i} = \sum_{j \in G_i} k_j / |G_i|$, em que $k_j$ é o grau do nó $j$ e $|G_i|$ é o número de nós na subrede $G_i$;
+                \item Grau positivo médio de nós: $\overline{k_i^+} = \sum_{j \in G_i, k_j \ge 0} k_j / |G_i|$;
+                \item Grau negativo médio de nós: $\overline{k_i^-} = \sum_{j \in G_i, k_j \le 0} k_j / |G_i|$;
+                \item Grau médio de vizinhos próximos: $\overline{k_{nn_i}} = \sum_{i \in G_i} \sum_{j \in nn(i)} k_j / G$, em que $nn(i)$ são os vizinhos próximos de $i$ e $G$ é o número de subgrafos (19, no nosso caso);
+                \item Força média dos nós: $\overline{s}_i = \sum_{j \in G_i} s_j / G$, em que $s_j$ é a força do nó $j$.
+            \end{itemize}
+
+            A Figura \ref{fig6} (apresentada em \cite{testolin2018deep}) mostra alguns resultados comparando as medidas acima para os subgrafos e camadas.
+
+            \begin{figure}[h!]
+                \centering
+                \includegraphics[scale=0.35]{Images/Structure vs function.png}
+                \caption{Resultados do estudo de características topológicas e funcionais.
+                Cada linha representa uma camada, cada coluna representa uma comparação.
+                Cada ponto é uma medida topológica de um subgrafo.}
+                \label{fig6}
+            \end{figure}
+
+            Alguns resultados, portanto:
+
+            \begin{itemize}
+                \item Vemos que não há clara correlação entre grau médio de nós e o grau médio de vizinhos próximos (coluna da esquerda).
+                \item Há uma correlação nas três camadas entre força média dos nós e grau médio dos nós (coluna do meio).
+                \item Há em partes correlação entre grau médio positivo dos nós e grau médio negativo: isso ocorre nas primeira e terceira camadas (coluna da direita).
+            \end{itemize}
 
     \section{Considerações finais}
 
