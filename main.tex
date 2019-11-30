@@ -12,6 +12,7 @@
 \usepackage{natbib}
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{amssymb}
 
 \begin{document}
 
@@ -97,19 +98,26 @@
 
             Sejam $W$ a matriz tridimensional de $W_k$ e $b$ a matriz de vetores $\mathbf{b_k}$.
 
-        \subsection{Aprendizado com método do gradiente}
+        \subsection{Aprendizado com o método do gradiente}
         
             Suponha que queiramos uma rede neural para diferenciar gatos e cachorros.
             Então construímos de forma que tenha dois neurônios na camada de saída.
             Queremos que, ao alimentarmos a rede com a imagem (vetorizada) e um cachorro, ela resulte em um vetor $(1, 0)$.
             Quando alimentada por uma imagem de um gato, $(0, 1)$.
             Buscamos um banco de dados de cachorros e gatos. Seja $\mathbf{y}$ a função que identifica cachorros e gatos:
-            $$\mathbf{y}(\mathbf{x}) =  \begin{cases}
-                                            (1, 0), & \textrm{se } \mathbf{x} \textrm{ representa um cachorro}, \\
-                                            (0, 1), & \textrm{se } \mathbf{x} \textrm{ representa um gato}
-                                        \end{cases}$$
 
-            Se $a$ é a função que representa nossa rede neural e temos $n$ imagens, definimos a função \textbf{custo}: $$C(W, b) = \dfrac{1}{2n} \sum_{\mathbf{x}} ||\mathbf{y}(\mathbf{x}) - a(\mathbf{x}, W, b)||^2$$
+            \begin{equation}
+                \mathbf{y}(\mathbf{x}) =    \begin{cases}
+                                                (1, 0), & \textrm{se } \mathbf{x} \textrm{ representa um cachorro}, \\
+                                                (0, 1), & \textrm{se } \mathbf{x} \textrm{ representa um gato}
+                                            \end{cases}
+            \end{equation}
+
+            Se $a$ é a função que representa nossa rede neural e temos $n$ imagens, definimos a função \textbf{custo}:
+            
+            \begin{equation}
+                C(W, b) = \dfrac{1}{2n} \sum_{\mathbf{x}} ||\mathbf{y}(\mathbf{x}) - a(\mathbf{x}, W, b)||^2
+            \end{equation}
 
             Nosso objetivo, nesse sentido, é calcular $W$ e $b$ tal que a função custo seja mínima.
             O método utilizado para isso é o do gradiente (\textit{gradient descent}), que atualiza os vetores $\mathbf{w_k}$ e $\mathbf{b_l}$ da seguinte forma:
@@ -121,7 +129,13 @@
                 \end{split}
             \end{equation}
 
-            Porém, como o cálculo pode ser custoso, introduzimos o método do gradiente escocástico (\textit{stochastic gradient descent}), de modo que escolhemos uma amostra aleatória $X_1, \cdots, X_m$ do nosso banco de dados (um "mini-batch") e calculamos:
+            Porém, como $C = (\sum_{\mathbf{x}} C_{\mathbf{x}}) / n$, então
+            
+            \begin{equation}
+                \dfrac{\partial C}{\partial \mathbf{w_k}} = \dfrac{1}{n} \sum_{\mathbf{x}} \dfrac{\partial C_{\mathbf{x}}}{\partial \mathbf{w_k}}
+            \end{equation}
+            
+            O cálculo para todo $\mathbf{x}$ pode ser custoso, então introduzimos o método do gradiente estocástico (\textit{stochastic gradient descent}), de modo que escolhemos uma amostra aleatória $X_1, \cdots, X_m$ do nosso banco de dados (um "mini-batch") e calculamos:
 
             \begin{equation}
                 \begin{split}
@@ -130,13 +144,72 @@
                 \end{split}
             \end{equation}
 
+            As derivadas, por sua vez, são calculadas utilizando \textit{backpropagation}.
+
     \section{Rede de crença profunda}
 
-        \subsection{Máquina de Boltzmann}
+        Em \cite{testolin2018deep}, foi utilizada outro tipo de arquitetura de redes neurais, a chamada rede de crença profunda (\textit{deep belief network}).
+        A topologia é muito semelhante, mas ela é diferente no modo como ocorre o aprendizado.
 
         \subsection{Máquina de Boltzmann restrita}
 
+            Uma máquina de Boltzmann restrita é um grafo bipartite em que as duas partições são totalmente conectadas por arestas não orientadas, como mostra a Figura \ref{fig3}, apresentada em \cite{testolin2018deep}.
+
+            \begin{figure}[h!]
+                \centering
+                \includegraphics[scale=0.5]{Images/Restricted Boltzmann machine.png}
+                \caption{Máquina de Boltzmann restrita.}
+                \label{fig3}
+            \end{figure}
+
+            A camada $v$ é chamada camada visível, pois é aquela que recebe o vetor de entrada.
+            A camada $h$ é a camada escondida. Como na rede \textit{feedforward}, as arestas têm pesos, porém não há viéses.
+
+            Nesta configuração de redes, os neurônios são ativados ($1$) ou não ($0$), diferentemente da configuração anterior, em que os neurônios pudiam assumir valores entre $[0, 1]$.
+            Seja $W$ a matriz de pesos dessa rede, e $w_{ji}$ um elemento.
+            Dado um vetor $\mathbf{v}$ na camada visível, a ativação $\mathbf{h}$ dos neurônios na camada é dada por:
+
+            \begin{equation}
+                h_i =   \begin{cases}
+                            1, \ \textrm{com probabilidade } \dfrac{1}{1 + e^{-\sum_j w_{ji} v_j}},\\
+                            0, \ \textrm{caso contrário}.
+                        \end{cases}
+                \label{hi}
+            \end{equation}
+
+            O aprendizado dessa rede acontece em duas fases, que, em \cite{testolin2018deep}, são chamadas de fases \textbf{positiva} e \textbf{negativa}.
+            Na fase positiva, fornecemos um vetor $\mathbf{v}$ à camada visível, e o vetor $\mathbf{h}$ é calculado de acordo com a equação \ref{hi}.
+
+            Na fase negativa, ao invés de colocarmos um vetor na camada de entrada, a rede automaticamente gera um vetor nessa camada, iniciando aleatoriamente um vetor na camada escondida.
+
+            Dessa forma, são atualizados os pesos da rede de acordo com
+
+            \begin{equation}
+                \Delta w_{ij} = \epsilon(\mathbb{E}_{\textrm{dados}}(v_i h_j) - \mathbb{E}_{\textrm{modelo}}(v_i h_j))
+            \end{equation}
+
+            em que $\mathbb{E}_{\textrm{dist}}$ é o valor esperado sob a distribuição especificada: distribuição empírica (fase positiva) e a distribuição do modelo (fase negativa).
+            $\epsilon$ é uma contante chamada taxa de aprendizado.
+            
+            Esse modelo é chamado de máquina de Boltzmann restrita pois há um grafo bipartite, em contraste com a máquina de Boltzmann convencional, em que a rede é totalmente conectada.
+
         \subsection{Rede de crença profunda}
+
+            Uma rede de crença profunda é uma composição de máquinas de Boltzmann restritas. Observe a Figura \ref{fig4}, apresentada em \cite{testolin2018deep}.
+
+            \begin{figure}[h!]
+                \centering
+                \includegraphics[scale=0.5]{Images/Deep belief network.png}
+                \caption{Rede de crença profunda.}
+                \label{fig4}
+            \end{figure}
+
+            Nessa rede, há uma camada visível e $n$ camadas escondidas.
+            Para treinar essa rede, treina-se a primeira máquina de Boltzmann restrita ($v$ e $h_1$).
+            Após isso, utiliza-se as atividades dos neurônios em $h_1$ para treinar a máquina de Boltzmann composta por $h_1$ e $h_2$.
+            E assim por diante.
+
+            A ideia nesse tipo de rede é que, à medida que atividades escondidas vão sendo utilizadas como entrada, a rede vai construindo representações mais abstratas dos dados (\cite{testolin2018deep}), assim como em uma rede neural tradicional.
 
     \section{Análise de redes neurais a partir de ciência de redes}
 
